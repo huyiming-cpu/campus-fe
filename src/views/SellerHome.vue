@@ -6,7 +6,7 @@
     </div>
 
     <div class="seller-card" v-if="seller.id">
-  <img :src="`http://localhost:8080/avatar/${seller.avatar}`" class="avatar" @error="handleAvatarError" />
+  <img :src="`${API_BASE}/avatar/${seller.avatar}`" class="avatar" @error="handleAvatarError" />
   <div>
     <h3>{{ seller.username }} <span class="auth-tag">已认证</span></h3>
     
@@ -31,7 +31,7 @@
 
     <div class="goods-list">
       <div class="goods-item" v-for="item in sellerGoods" :key="item.id" @click="toDetail(item.id)">
-        <img :src="`http://localhost:8080/products/${item.image}`" class="goods-img" @error="handleImageError" />
+        <img :src="`${API_BASE}/products/${item.image}`" class="goods-img" @error="handleImageError" />
         <div class="name">{{ item.name }}</div>
         <div class="price">¥{{ item.price }}</div>
       </div>
@@ -55,7 +55,7 @@
     <div class="evaluation-item" v-for="item in evaluationList" :key="item.id">
       <div class="eval-header">
         <img 
-          :src="`http://localhost:8080/avatar/${item.fromUser?.avatar || 'default.jpg'}`" 
+          :src="`${API_BASE}/avatar/${item.fromUser?.avatar || 'default.jpg'}`" 
           class="eval-avatar"
           @error="handleAvatarError"
         />
@@ -69,7 +69,7 @@
       </div>
       <div class="eval-content">
         <div class="eval-product">
-          <img :src="`http://localhost:8080/products/${item.product?.image}`" class="eval-product-img" />
+          <img :src="`${API_BASE}/products/${item.product?.image}`" class="eval-product-img" />
           <span>{{ item.product?.name }}</span>
         </div>
         <p class="eval-text">{{ item.content }}</p>
@@ -88,6 +88,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
@@ -101,11 +102,11 @@ const sellerGoods = ref([])
 
 // 图片加载失败处理
 const handleAvatarError = (e) => {
-  e.target.src = 'http://localhost:8080/avatar/default.jpg'
+  e.target.src = `\${API_BASE}/avatar/default.jpg`
 }
 
 const handleImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg'
+  e.target.src = `\${API_BASE}/products/default.jpg`
 }
 // 随机生成星星样式
 const getStarStyle = () => {
@@ -132,7 +133,7 @@ const evaluationLoaded = ref(false)
 // 获取卖家评价
 const getSellerEvaluations = async () => {
   try {
-    const res = await axios.get(`http://localhost:8080/evaluation/seller/${sellerId}`)
+    const res = await axios.get(`${API_BASE}/evaluation/seller/${sellerId}`)
     if (res.data.code === 200) {
       evaluationList.value = res.data.data.list || []
       evaluationTotal.value = res.data.data.total || 0
@@ -156,7 +157,7 @@ const formatDate = (time) => {
 const getSellerInfo = async () => {
   try {
     // 1. 获取所有商品
-    const res = await axios.get('http://localhost:8080/product/list')
+    const res = await axios.get(`\${API_BASE}/product/list`)
     const all = res.data.data || []
     
     // 2. ✅ 修复：用 p.user.id 匹配卖家ID
@@ -169,7 +170,7 @@ const getSellerInfo = async () => {
     } else {
       // 如果该卖家没有商品，单独查询用户信息
       try {
-        const userRes = await axios.get(`http://localhost:8080/user/${sellerId}`)
+        const userRes = await axios.get(`${API_BASE}/user/${sellerId}`)
         if (userRes.data && userRes.data.data) {
           seller.value = userRes.data.data
         }

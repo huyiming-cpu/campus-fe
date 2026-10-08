@@ -55,7 +55,7 @@
           </div>
 
           <div class="order-content">
-            <img :src="`http://localhost:8080/products/${order.product?.image}`" class="order-img" />
+            <img :src="`${API_BASE}/products/${order.product?.image}`" class="order-img" />
             <div class="order-info">
               <div class="order-name">{{ order.product?.name }}</div>
               <div class="order-quantity">x{{ order.quantity }}</div>
@@ -147,7 +147,7 @@
   <div class="evaluate-dialog-content" @click.stop>
     <h3>⭐ 评价商品</h3>
     <div class="evaluate-product">
-      <img :src="`http://localhost:8080/products/${currentOrder.product?.image}`" />
+      <img :src="`${API_BASE}/products/${currentOrder.product?.image}`" />
       <div class="product-name">{{ currentOrder.product?.name }}</div>
     </div>
     <div class="rating-section">
@@ -208,7 +208,7 @@
       <div class="detail-section">
         <div class="section-title">商品信息</div>
         <div class="product-detail">
-          <img :src="`http://localhost:8080/products/${detailOrder.product?.image}`" class="detail-img" />
+          <img :src="`${API_BASE}/products/${detailOrder.product?.image}`" class="detail-img" />
           <div class="product-detail-info">
             <div class="detail-name">{{ detailOrder.product?.name }}</div>
             <div class="detail-price">单价：¥{{ detailOrder.price }}</div>
@@ -316,6 +316,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -373,7 +374,7 @@ const selectedNewAddress = ref(null)
 // 获取用户地址列表
 const loadUserAddresses = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/address/list', {
+    const res = await axios.get(`\${API_BASE}/address/list`, {
       withCredentials: true
     })
     addressList.value = res.data.data || []
@@ -403,7 +404,7 @@ const confirmAddressChange = async () => {
   }
   
   try {
-    const res = await axios.post('http://localhost:8080/order/updateAddress', null, {
+    const res = await axios.post(`\${API_BASE}/order/updateAddress`, null, {
       params: {
         orderId: detailOrder.value.id,
         addressId: selectedAddressId.value
@@ -437,7 +438,7 @@ const sellPendingCount = ref(0) // 卖家待处理数量
 const calculatePendingCounts = async () => {
   try {
     // 获取卖家订单
-    const sellRes = await axios.get('http://localhost:8080/order/mySell', {
+    const sellRes = await axios.get(`\${API_BASE}/order/mySell`, {
       params: { status: '' },
       withCredentials: true
     })
@@ -453,7 +454,7 @@ const calculatePendingCounts = async () => {
     sellPendingCount.value = sellCount
     
     // 获取买家订单
-    const buyRes = await axios.get('http://localhost:8080/order/myBuy', {
+    const buyRes = await axios.get(`\${API_BASE}/order/myBuy`, {
       params: { status: '' },
       withCredentials: true
     })
@@ -490,7 +491,7 @@ const loadOrders = async () => {
   loading.value = true
   try {
     const url = role.value === 'buy' ? '/order/myBuy' : '/order/mySell'
-    const res = await axios.get(`http://localhost:8080${url}`, {
+    const res = await axios.get(`${API_BASE}${url}`, {
       params: { status: (currentStatus.value === 'refund' || currentStatus.value === 'needAction') ? undefined : currentStatus.value || undefined },
       withCredentials: true
     })
@@ -500,7 +501,7 @@ const loadOrders = async () => {
     for (let order of orders) {
       if (order.orderStatus === 'completed') {
         try {
-          const statusRes = await axios.get(`http://localhost:8080/evaluation/order/status`, {
+          const statusRes = await axios.get(`${API_BASE}/evaluation/order/status`, {
             params: { orderId: order.id },
             withCredentials: true
           })
@@ -579,7 +580,7 @@ const goPay = (orderId) => {
 const shipOrder = async (orderId) => {
   if (!confirm('确认发货吗？')) return
   try {
-    await axios.post('http://localhost:8080/order/ship', null, {
+    await axios.post(`\${API_BASE}/order/ship`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -593,7 +594,7 @@ const shipOrder = async (orderId) => {
 const confirmOrder = async (orderId) => {
   if (!confirm('确认收货了吗？确认后将从钱包扣款')) return
   try {
-    await axios.post('http://localhost:8080/order/confirm', null, {
+    await axios.post(`\${API_BASE}/order/confirm`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -612,7 +613,7 @@ const setPickupPoint = async (orderId) => {
   }
   
   try {
-    await axios.post('http://localhost:8080/order/setPickupPoint', null, {
+    await axios.post(`\${API_BASE}/order/setPickupPoint`, null, {
       params: { orderId, pickupPoint },
       withCredentials: true
     })
@@ -627,7 +628,7 @@ const setPickupPoint = async (orderId) => {
 const applyRefund = async (orderId) => {
   if (!confirm('确定要申请退款吗？')) return
   try {
-    const res = await axios.post('http://localhost:8080/order/refund/apply', null, {
+    const res = await axios.post(`\${API_BASE}/order/refund/apply`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -641,7 +642,7 @@ const applyRefund = async (orderId) => {
 const cancelOrder = async (orderId) => {
   if (!confirm('确定取消该订单吗？')) return
   try {
-    const res = await axios.post('http://localhost:8080/order/cancel', null, {
+    const res = await axios.post(`\${API_BASE}/order/cancel`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -657,7 +658,7 @@ const handleRefund = async (orderId, action) => {
   if (!confirm(`确定${msg}吗？`)) return
   try {
     const url = action === 'approve' ? '/order/refund/approve' : '/order/refund/reject'
-    const res = await axios.post(`http://localhost:8080${url}`, null, {
+    const res = await axios.post(`${API_BASE}${url}`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -685,7 +686,7 @@ const showEvaluateDialog = (order) => {
 // 提交评价
 const submitEvaluate = async () => {
   try {
-    const res = await axios.post('http://localhost:8080/evaluation/create', {
+    const res = await axios.post(`\${API_BASE}/evaluation/create`, {
       orderId: currentOrder.value.id,  // 使用当前订单的ID
       rating: rating.value,
       content: evaluateContent.value

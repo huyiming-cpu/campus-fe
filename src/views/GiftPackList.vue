@@ -32,7 +32,7 @@
         <div class="pack-cover">
  <div class="cover-grid" v-if="pack.products && pack.products.length >= 4">
     <div class="grid-item" v-for="(p, idx) in pack.products.slice(0,4)" :key="idx">
-      <img :src="`http://localhost:8080/products/${p.image}`" />
+      <img :src="`${API_BASE}/products/${p.image}`" />
     </div>
     <!-- 不足4个时补空白 -->
     <div class="grid-item empty" v-for="i in (4 - (pack.products?.slice(0,4).length || 0))" :key="'empty'+i">
@@ -47,7 +47,7 @@
           <div class="pack-name">{{ pack.name }}</div>
           <div class="pack-desc">{{ pack.description }}</div>
           <div class="pack-seller">
-            <img :src="`http://localhost:8080/avatar/${pack.seller?.avatar || 'default.jpg'}`" class="seller-avatar" />
+            <img :src="`${API_BASE}/avatar/${pack.seller?.avatar || 'default.jpg'}`" class="seller-avatar" />
             <span>{{ pack.seller?.username }}</span>
           </div>
         </div>
@@ -71,7 +71,7 @@
           <div class="product-select-list">
             <div v-for="product in myProducts" :key="product.id" class="product-select-item" @click="toggleSelect(product)">
               <input type="checkbox" :checked="selectedIds.includes(product.id)" />
-              <img :src="`http://localhost:8080/products/${product.image}`" class="select-img" />
+              <img :src="`${API_BASE}/products/${product.image}`" class="select-img" />
               <span class="product-name">{{ product.name }}</span>
               <span class="select-price">¥{{ product.price }}</span>
             </div>
@@ -137,6 +137,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
@@ -208,7 +209,7 @@ const daysLeft = computed(() => {
 const loadPacks = async () => {
   loading.value = true
   try {
-    const res = await axios.get(`http://localhost:8080/giftPack/list`, {
+    const res = await axios.get(`${API_BASE}/giftPack/list`, {
       params: { type: type.value },
       withCredentials: true
     })
@@ -224,7 +225,7 @@ const loadPacks = async () => {
 // 获取我的商品
 const loadMyProducts = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/product/my/all', {
+    const res = await axios.get(`\${API_BASE}/product/my/all`, {
       withCredentials: true
     })
     myProducts.value = res.data.data || []
@@ -255,7 +256,7 @@ const createGiftPack = async () => {
   }
    let discount = type.value === 'graduation' ? 0.85 : 0.9
   try {
-    const res = await axios.post('http://localhost:8080/giftPack/create', {
+    const res = await axios.post(`\${API_BASE}/giftPack/create`, {
       name: createForm.value.name,
       description: createForm.value.description,
       productIds: selectedIds.value.join(','),
@@ -314,7 +315,7 @@ const goToDetail = (id) => {
 // 获取奖品列表（从后端获取实际优惠券）
 const loadPrizeList = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/coupon/list')
+    const res = await axios.get(`\${API_BASE}/coupon/list`)
     prizeList.value = res.data.data || []
     console.log('奖品列表:', prizeList.value)
   } catch (err) {
@@ -332,14 +333,14 @@ const loadPrizeList = async () => {
 
 
 const loadMyCoupons = async () => {
-  const res = await axios.get('http://localhost:8080/coupon/my', {
+  const res = await axios.get(`\${API_BASE}/coupon/my`, {
     withCredentials: true
   })
   myCoupons.value = res.data.data || []
 }
 
 const loadRemainDraw = async () => {
-  const res = await axios.get('http://localhost:8080/coupon/remain', {
+  const res = await axios.get(`\${API_BASE}/coupon/remain`, {
     withCredentials: true
   })
   remainDraw.value = res.data.data || 0
@@ -409,7 +410,7 @@ console.log('找的prize:', prize)
     rotateDeg.value = targetRotate
     
     // 调用后端抽奖（实际发券）
-   const res = await axios.post('http://localhost:8080/coupon/draw', null, {
+   const res = await axios.post(`\${API_BASE}/coupon/draw`, null, {
   params: { couponId: prize.id },
   withCredentials: true
 })

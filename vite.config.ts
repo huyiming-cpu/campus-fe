@@ -11,7 +11,9 @@ export default defineConfig({
     vueDevTools(),
   ],
   server: {
-    allowedHosts: true  // 👈 加上这一行！
+    host: true,          // 监听所有网卡（CloudStudio 云端预览必需）
+    port: 5173,
+    allowedHosts: true,  // 允许任意域名访问（CloudStudio 代理域名）
   },
   resolve: {
     alias: {

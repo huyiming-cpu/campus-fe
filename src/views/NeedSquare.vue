@@ -27,7 +27,7 @@
         <div class="match-card" v-for="item in matchList" :key="item.id">
   <div class="match-left">
     <div class="match-user">
-      <img :src="`http://localhost:8080/avatar/${item.avatar || 'default.jpg'}`" class="match-avatar" />
+      <img :src="`${API_BASE}/avatar/${item.avatar || 'default.jpg'}`" class="match-avatar" />
       <div>
         <div class="match-username">{{ item.username }}</div>
         <div class="match-university">{{ item.university }}</div>
@@ -45,7 +45,7 @@
       </div>
     </div>
   </div>
-  <img v-if="item.image" :src="`http://localhost:8080/need/${item.image}`" class="match-img" />
+  <img v-if="item.image" :src="`${API_BASE}/need/${item.image}`" class="match-img" />
    <div class="match-time">{{ formatTime(item.createTime) }}</div>
 </div>
         </div>
@@ -60,12 +60,12 @@
         </div>
         <div class="recommend-list">
           <div class="recommend-card" v-for="product in recommendProducts" :key="product.id" @click="goToProduct(product.id)">
-            <img :src="`http://localhost:8080/products/${product.image}`" class="recommend-img" />
+            <img :src="`${API_BASE}/products/${product.image}`" class="recommend-img" />
             <div class="recommend-info">
               <div class="recommend-name">{{ product.name }}</div>
               <div class="recommend-price">¥{{ product.price }}</div>
               <div class="recommend-seller">
-                <img :src="`http://localhost:8080/avatar/${product.user?.avatar || 'default.jpg'}`" class="recommend-avatar" />
+                <img :src="`${API_BASE}/avatar/${product.user?.avatar || 'default.jpg'}`" class="recommend-avatar" />
                 <span>{{ product.user?.username || '匿名' }}</span>
               </div>
             </div>
@@ -83,7 +83,7 @@
         <div class="need-card" v-for="item in needList" :key="item.id">
           <div class="need-left">
             <div class="user-info" @click="goToUser(item.userId)">
-              <img :src="`http://localhost:8080/avatar/${item.avatar || 'default.jpg'}`" class="avatar" />
+              <img :src="`${API_BASE}/avatar/${item.avatar || 'default.jpg'}`" class="avatar" />
               <div>
                 <div class="username">{{ item.username }}</div>
                 <div class="university">{{ item.university }}</div>
@@ -104,7 +104,7 @@
             </div>
           </div>
           
-          <img v-if="item.image" :src="`http://localhost:8080/need/${item.image}`" class="need-img" />
+          <img v-if="item.image" :src="`${API_BASE}/need/${item.image}`" class="need-img" />
           
           <div class="need-time">{{ formatTime(item.createTime) }}</div>
         </div>
@@ -164,6 +164,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -195,7 +196,7 @@ const currentUserId = sessionStorage.getItem("userId")
 const loadNeeds = async () => {
   loading.value = true
   try {
-    let url = 'http://localhost:8080/need/list'
+    let url = `\${API_BASE}/need/list`
     let params = {}
     
     if (filterType.value === 'school') {
@@ -231,7 +232,7 @@ const loadNeeds = async () => {
 // 加载智能匹配（需求帖子）
 const loadMatch = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/need/match', {
+    const res = await axios.get(`\${API_BASE}/need/match`, {
       withCredentials: true
     })
     matchList.value = res.data.data || []
@@ -243,7 +244,7 @@ const loadMatch = async () => {
 // 加载推荐商品（根据用户需求匹配商品）
 const loadRecommendProducts = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/need/recommend/byNeed', {
+    const res = await axios.get(`\${API_BASE}/need/recommend/byNeed`, {
       withCredentials: true
     })
     recommendProducts.value = res.data.data || []
@@ -276,7 +277,7 @@ const uploadImage = async (e) => {
   formData.append('file', file)
   
   try {
-    const res = await axios.post('http://localhost:8080/need/upload', formData)
+    const res = await axios.post(`\${API_BASE}/need/upload`, formData)
     publishForm.value.image = res.data.data
     previewImage.value = URL.createObjectURL(file)
   } catch (err) {
@@ -290,7 +291,7 @@ const submitNeed = async () => {
     return
   }
   try {
-    const res = await axios.post('http://localhost:8080/need/publish', {
+    const res = await axios.post(`\${API_BASE}/need/publish`, {
       type: publishForm.value.type,
       category: publishForm.value.category,
       title: publishForm.value.title,
@@ -318,7 +319,7 @@ const submitNeed = async () => {
 const deleteNeed = async (id) => {
   if (!confirm('确定删除吗？')) return
   try {
-    await axios.delete(`http://localhost:8080/need/delete/${id}`, {
+    await axios.delete(`${API_BASE}/need/delete/${id}`, {
       withCredentials: true
     })
     alert('删除成功')

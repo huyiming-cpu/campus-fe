@@ -17,7 +17,7 @@
                 <span v-else-if="user.rank === 3">🥉</span>
                 <span v-else class="rank-number">{{ user.rank }}</span>
               </div>
-              <img :src="`http://localhost:8080/avatar/${user.avatar || 'default.jpg'}`" class="rank-avatar" />
+              <img :src="`${API_BASE}/avatar/${user.avatar || 'default.jpg'}`" class="rank-avatar" />
               <div class="rank-name">{{ user.username }}</div>
               <div class="rank-score">{{ user.creditScore }}分</div>
               <div class="rank-level" :class="'level-' + getLevelClass(user.creditLevel)">{{ user.creditLevel }}</div>
@@ -130,7 +130,7 @@
     <div v-else class="evaluation-list">
       <div class="evaluation-card" v-for="item in evaluationList" :key="item.id">
         <div class="card-header">
-          <img :src="`http://localhost:8080/avatar/${getAvatar(item)}`" class="avatar" />
+          <img :src="`${API_BASE}/avatar/${getAvatar(item)}`" class="avatar" />
           <div class="user-info">
             <div class="username">{{ getUsername(item) }}</div>
             <div class="time">{{ formatTime(item.createTime) }}</div>
@@ -141,7 +141,7 @@
         </div>
         <div class="card-content">
           <div class="product-info">
-            <img :src="`http://localhost:8080/products/${item.product?.image}`" class="product-img" />
+            <img :src="`${API_BASE}/products/${item.product?.image}`" class="product-img" />
             <span class="product-name">{{ item.product?.name }}</span>
           </div>
           <div class="comment">{{ item.content }}</div>
@@ -157,6 +157,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -181,7 +182,7 @@ const levelClass = computed(() => {
 // 获取用户信息
 const getUserInfo = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/user/getMyInfo', {
+    const res = await axios.get(`\${API_BASE}/user/getMyInfo`, {
       withCredentials: true
     })
     userInfo.value = res.data.data
@@ -346,7 +347,7 @@ const endGame = () => {
 const addCreditScore = async () => {
   try {
     // 调用更新信用分的接口（你需要根据你的后端调整）
-    const res = await axios.post('http://localhost:8080/user/credit/add', null, {
+    const res = await axios.post(`\${API_BASE}/user/credit/add`, null, {
       params: { score: 1 },
       withCredentials: true
     })
@@ -368,7 +369,7 @@ const closeGameResult = () => {
 const getRankList = async () => {
   loadingRank.value = true
   try {
-    const res = await axios.get('http://localhost:8080/user/credit/rank', {
+    const res = await axios.get(`\${API_BASE}/user/credit/rank`, {
       withCredentials: true
     })
     console.log('排行榜返回数据：', res.data)  // 调试用
@@ -394,8 +395,8 @@ const loadEvaluations = async () => {
   loading.value = true
   try {
     const url = currentTab.value === 'received' 
-      ? 'http://localhost:8080/evaluation/received'
-      : 'http://localhost:8080/evaluation/given'
+      ? `\${API_BASE}/evaluation/received`
+      : `\${API_BASE}/evaluation/given`
     const res = await axios.get(url, {
       withCredentials: true
     })

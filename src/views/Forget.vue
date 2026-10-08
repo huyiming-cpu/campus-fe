@@ -51,6 +51,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref } from 'vue'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
@@ -121,7 +122,7 @@ const doReset = async () => {
   }
 
   try {
-    await axios.post('http://localhost:8080/user/resetPassword', form.value)
+    await axios.post(`\${API_BASE}/user/resetPassword`, form.value)
     ElMessage.success('密码重置成功！')
     router.push('/login')
   } catch (err) {

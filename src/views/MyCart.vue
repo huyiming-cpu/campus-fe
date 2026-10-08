@@ -35,7 +35,7 @@
             <span class="checkmark"></span>
           </label>
           
-          <img :src="`http://localhost:8080/products/${item.product?.image}`" class="item-img" @error="handleImageError" />
+          <img :src="`${API_BASE}/products/${item.product?.image}`" class="item-img" @error="handleImageError" />
           
           <div class="item-info">
             <h4>{{ item.product?.name }}</h4>
@@ -66,6 +66,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
@@ -105,7 +106,7 @@ const getStarStyle = () => {
 
 
 const handleImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg'
+  e.target.src = `\${API_BASE}/products/default.jpg`
 }
 
 const toggleSelectAll = () => {
@@ -122,7 +123,7 @@ const updateSelectAll = () => {
 }
 
 onMounted(() => {
-  axios.get('http://localhost:8080/product/cart/my', {
+  axios.get(`\${API_BASE}/product/cart/my`, {
     params: { userId }
   }).then(res => {
     cartList.value = res.data.data || []
@@ -134,7 +135,7 @@ onMounted(() => {
 })
 
 const del = (id) => {
-  axios.get('http://localhost:8080/product/cart/delete', {
+  axios.get(`\${API_BASE}/product/cart/delete`, {
     params: { id: id }
   }).then(() => {
     cartList.value = cartList.value.filter(c => c.id !== id)

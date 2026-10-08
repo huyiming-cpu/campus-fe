@@ -12,10 +12,10 @@
       <div class="cover-section">
         <div class="cover-grid" v-if="giftPack.products && giftPack.products.length >= 4">
           <div class="grid-item" v-for="(p, idx) in giftPack.products.slice(0,4)" :key="idx">
-            <img :src="`http://localhost:8080/products/${p.image}`" />
+            <img :src="`${API_BASE}/products/${p.image}`" />
           </div>
         </div>
-        <img v-else :src="`http://localhost:8080/products/${giftPack.products?.[0]?.image || 'default.jpg'}`" class="cover-img" />
+        <img v-else :src="`${API_BASE}/products/${giftPack.products?.[0]?.image || 'default.jpg'}`" class="cover-img" />
         <div class="discount-badge">{{ giftPack.type === 'graduation' ? '8.5折' : '9折' }}</div>
       </div>
 
@@ -32,7 +32,7 @@
 
         <!-- 卖家信息 -->
         <div class="seller-info" @click="goToSeller">
-          <img :src="`http://localhost:8080/avatar/${giftPack.seller?.avatar || 'default.jpg'}`" class="seller-avatar" />
+          <img :src="`${API_BASE}/avatar/${giftPack.seller?.avatar || 'default.jpg'}`" class="seller-avatar" />
           <div>
             <div class="seller-name">{{ giftPack.seller?.username }}</div>
             <div class="seller-credit">信用：{{ giftPack.seller?.creditLevel || '普通' }}</div>
@@ -43,7 +43,7 @@
         <div class="products-title">📦 礼包包含商品</div>
         <div class="products-list">
           <div class="product-item" v-for="product in giftPack.products" :key="product.id">
-            <img :src="`http://localhost:8080/products/${product.image}`" class="product-img" />
+            <img :src="`${API_BASE}/products/${product.image}`" class="product-img" />
             <div class="product-info">
               <div class="product-name">{{ product.name }}</div>
               <div class="product-price">¥{{ product.price }}</div>
@@ -71,6 +71,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
@@ -110,7 +111,7 @@ const getStarStyle = () => {
 }
 const loadDetail = async () => {
   try {
-    const res = await axios.get(`http://localhost:8080/giftPack/detail/${giftPackId}`, {
+    const res = await axios.get(`${API_BASE}/giftPack/detail/${giftPackId}`, {
       withCredentials: true
     })
     giftPack.value = res.data.data
@@ -123,7 +124,7 @@ const loadDetail = async () => {
 const deletePack = async () => {
   if (!confirm('确定删除该礼包吗？')) return
   try {
-    const res = await axios.delete(`http://localhost:8080/giftPack/delete/${giftPackId}`, {
+    const res = await axios.delete(`${API_BASE}/giftPack/delete/${giftPackId}`, {
       withCredentials: true
     })
     if (res.data.code === 200) {

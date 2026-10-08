@@ -80,7 +80,7 @@
   
   <div class="product-list">
     <div class="product-card" v-for="product in filteredProducts" :key="product.id" @click="goToProductDetail(product.id)">
-      <img :src="`http://localhost:8080/products/${product.image}`" class="product-img" />
+      <img :src="`${API_BASE}/products/${product.image}`" class="product-img" />
       <div class="product-info">
         <div class="product-name">{{ product.name }}</div>
         <div class="product-price">¥{{ product.price }}</div>
@@ -200,7 +200,7 @@
     </div>
     <div class="dialog-body">
       <div class="product-preview">
-        <img :src="`http://localhost:8080/products/${auditProduct.image}`" class="audit-img" />
+        <img :src="`${API_BASE}/products/${auditProduct.image}`" class="audit-img" />
         <div class="audit-info">
           <div><strong>商品名称：</strong>{{ auditProduct.name }}</div>
           <div><strong>价格：</strong>¥{{ auditProduct.price }}</div>
@@ -247,7 +247,7 @@
       </div>
       
       <div class="order-content">
-        <img :src="`http://localhost:8080/products/${order.product?.image}`" class="order-img" />
+        <img :src="`${API_BASE}/products/${order.product?.image}`" class="order-img" />
         <div class="order-info">
           <div class="order-name">{{ order.product?.name }}</div>
           <div class="order-price">单价：¥{{ order.price }} × {{ order.quantity }}</div>
@@ -325,7 +325,7 @@
       </div>
       <div class="detail-row">
         <label>商品图片：</label>
-        <img :src="`http://localhost:8080/products/${currentOrder.product?.image}`" style="width: 80px; height: 80px; object-fit: cover;" />
+        <img :src="`${API_BASE}/products/${currentOrder.product?.image}`" style="width: 80px; height: 80px; object-fit: cover;" />
       </div>
       <div class="detail-row">
         <label>单价：</label>
@@ -528,6 +528,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -595,7 +596,7 @@ const filteredProducts = computed(() => {
 // 加载待审核商品
 const loadPendingProducts = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/product/admin/pending', {
+    const res = await axios.get(`\${API_BASE}/product/admin/pending`, {
       withCredentials: true
     })
     const pendingList = res.data.data || []
@@ -618,7 +619,7 @@ const openAuditDialog = (product) => {
 // 提交审核
 const submitAudit = async (auditStatus) => {
   try {
-    const res = await axios.post('http://localhost:8080/product/admin/audit', null, {
+    const res = await axios.post(`\${API_BASE}/product/admin/audit`, null, {
       params: {
         productId: auditProduct.value.id,
         auditStatus: auditStatus
@@ -687,7 +688,7 @@ const submitEditProduct = async () => {
     return
   }
   try {
-    const res = await axios.post('http://localhost:8080/product/update', editProductForm.value, {
+    const res = await axios.post(`\${API_BASE}/product/update`, editProductForm.value, {
       withCredentials: true
     })
     if (res.data.code === 200) {
@@ -750,7 +751,7 @@ const viewOrderDetail = (order) => {
 const adminCancelOrder = async (orderId) => {
   if (!confirm('确定要取消该订单吗？')) return
   try {
-    const res = await axios.post(`http://localhost:8080/order/admin/cancel/${orderId}`, null, {
+    const res = await axios.post(`${API_BASE}/order/admin/cancel/${orderId}`, null, {
       withCredentials: true
     })
     alert(res.data.msg || '取消成功')
@@ -774,7 +775,7 @@ const adminHandleRefund = async (orderId, action) => {
   
   try {
     const url = action === 'approve' ? '/order/refund/approve' : '/order/refund/reject'
-    const res = await axios.post(`http://localhost:8080${url}`, null, {
+    const res = await axios.post(`${API_BASE}${url}`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -788,15 +789,15 @@ const adminHandleRefund = async (orderId, action) => {
 // 加载统计数据
 const loadStats = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/product/list')
+    const res = await axios.get(`\${API_BASE}/product/list`)
     const products = res.data.data || []
     stats.value.products = products.length
     stats.value.selling = products.filter(p => p.status === 0).length
     
-    const userRes = await axios.get('http://localhost:8080/user/admin/users')
+    const userRes = await axios.get(`\${API_BASE}/user/admin/users`)
     stats.value.users = (userRes.data.data || []).length
     
-    const orderRes = await axios.get('http://localhost:8080/order/admin/all')
+    const orderRes = await axios.get(`\${API_BASE}/order/admin/all`)
     const orders = orderRes.data.data || []
     
     const originalTotal = orders.reduce((sum, o) => sum + (o.price * o.quantity || 0), 0)
@@ -810,7 +811,7 @@ const loadStats = async () => {
 // 加载商品列表（管理员专用）
 const loadProducts = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/product/admin/list', {
+    const res = await axios.get(`\${API_BASE}/product/admin/list`, {
       withCredentials: true
     })
     productList.value = res.data.data || []
@@ -825,11 +826,11 @@ const goToDetail = (id, type) => {
 // 加载用户列表
 const loadUsers = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/user/admin/users')
+    const res = await axios.get(`\${API_BASE}/user/admin/users`)
     userList.value = res.data.data || []
     for (let user of userList.value) {
       try {
-     const productRes = await axios.get(`http://localhost:8080/product/admin/user/products`, {
+     const productRes = await axios.get(`${API_BASE}/product/admin/user/products`, {
   params: { userId: user.id }
 })
         user.productCount = (productRes.data.data || []).length
@@ -847,7 +848,7 @@ const deleteUser = async (userId, username) => {
   if (!confirm(`确定要删除用户 "${username}" 吗？\n该用户的所有商品和订单也会被删除，此操作不可恢复！`)) return
   
   try {
-    const res = await axios.delete(`http://localhost:8080/user/admin/delete/${userId}`, {
+    const res = await axios.delete(`${API_BASE}/user/admin/delete/${userId}`, {
       withCredentials: true
     })
     if (res.data.code === 200) {
@@ -864,7 +865,7 @@ const deleteUser = async (userId, username) => {
 // 加载订单列表
 const loadOrders = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/order/admin/all')
+    const res = await axios.get(`\${API_BASE}/order/admin/all`)
     orderList.value = res.data.data || []
   } catch (err) {
     console.error('加载订单失败', err)
@@ -875,7 +876,7 @@ const loadOrders = async () => {
 const offProduct = async (id) => {
   if (!confirm('确定下架该商品吗？')) return
   try {
-    await axios.post(`http://localhost:8080/product/off/${id}`)
+    await axios.post(`${API_BASE}/product/off/${id}`)
     alert('下架成功')
     loadProducts()
     loadStats()
@@ -888,7 +889,7 @@ const offProduct = async (id) => {
 const deleteProduct = async (id) => {
   if (!confirm('确定删除该商品吗？此操作不可恢复！')) return
   try {
-    await axios.delete(`http://localhost:8080/product/delete/${id}`)
+    await axios.delete(`${API_BASE}/product/delete/${id}`)
     alert('删除成功')
     loadProducts()
     loadStats()
@@ -899,7 +900,7 @@ const deleteProduct = async (id) => {
 // 切换热门状态（无确认弹窗）
 const toggleHot = async (product, isHot) => {
   try {
-    const res = await axios.post('http://localhost:8080/product/update', {
+    const res = await axios.post(`\${API_BASE}/product/update`, {
       id: product.id,
       name: product.name,
       price: product.price,
@@ -928,7 +929,7 @@ const editUser = (user) => {
 // 保存用户编辑
 const saveUserEdit = async () => {
   try {
-    await axios.post('http://localhost:8080/user/admin/update', editUserForm.value)
+    await axios.post(`\${API_BASE}/user/admin/update`, editUserForm.value)
     alert('保存成功')
     showEditDialog.value = false
     loadUsers()
@@ -956,7 +957,7 @@ const getOrderStatus = (status) => {
 const adminShipOrder = async (orderId) => {
   if (!confirm('确定强制发货吗？')) return
   try {
-    const res = await axios.post(`http://localhost:8080/order/admin/ship/${orderId}`, null, {
+    const res = await axios.post(`${API_BASE}/order/admin/ship/${orderId}`, null, {
       withCredentials: true
     })
     alert(res.data.msg || '发货成功')
@@ -971,7 +972,7 @@ const adminShipOrder = async (orderId) => {
 const adminConfirmOrder = async (orderId) => {
   if (!confirm('确定强制确认收货吗？注意：线下交易会直接扣款！')) return
   try {
-    const res = await axios.post(`http://localhost:8080/order/admin/confirm/${orderId}`, null, {
+    const res = await axios.post(`${API_BASE}/order/admin/confirm/${orderId}`, null, {
       withCredentials: true
     })
     alert(res.data.msg || '确认成功')
@@ -986,7 +987,7 @@ const adminConfirmOrder = async (orderId) => {
 const adminDeleteOrder = async (orderId) => {
   if (!confirm('确定删除该订单吗？此操作不可恢复！')) return
   try {
-    const res = await axios.delete(`http://localhost:8080/order/admin/delete/${orderId}`, {
+    const res = await axios.delete(`${API_BASE}/order/admin/delete/${orderId}`, {
       withCredentials: true
     })
     alert(res.data.msg || '删除成功')
@@ -1023,11 +1024,11 @@ const closeActivity = () => {
 // 加载所有礼包
 const loadAllGiftPacks = async () => {
   try {
-    const gradRes = await axios.get('http://localhost:8080/giftPack/list', {
+    const gradRes = await axios.get(`\${API_BASE}/giftPack/list`, {
       params: { type: 'graduation' },
       withCredentials: true
     })
-    const freshRes = await axios.get('http://localhost:8080/giftPack/list', {
+    const freshRes = await axios.get(`\${API_BASE}/giftPack/list`, {
       params: { type: 'freshman' },
       withCredentials: true
     })
@@ -1041,7 +1042,7 @@ const loadAllGiftPacks = async () => {
 const deleteGiftPack = async (id) => {
   if (!confirm('确定删除该礼包吗？')) return
   try {
-    await axios.delete(`http://localhost:8080/giftPack/delete/${id}`, {
+    await axios.delete(`${API_BASE}/giftPack/delete/${id}`, {
       withCredentials: true
     })
     alert('删除成功')

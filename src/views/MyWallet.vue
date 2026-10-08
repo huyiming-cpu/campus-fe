@@ -81,6 +81,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted,computed} from 'vue'
 import axios from 'axios'
 
@@ -130,7 +131,7 @@ const filterTransactions = () => {
 }// 获取钱包余额
 const getBalance = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/order/wallet/balance', {
+    const res = await axios.get(`\${API_BASE}/order/wallet/balance`, {
       withCredentials: true
     })
     balance.value = res.data.data || '0.00'
@@ -204,7 +205,7 @@ const clearMonthFilter = () => {
 const getTransactions = async () => {
   loading.value = true
   try {
-    const res = await axios.get('http://localhost:8080/order/wallet/transactions', {
+    const res = await axios.get(`\${API_BASE}/order/wallet/transactions`, {
       withCredentials: true
     })
     allTransactions.value = res.data.data || []
@@ -227,7 +228,7 @@ const doRecharge = async () => {
   }
   
   try {
-    await axios.post('http://localhost:8080/order/wallet/recharge', null, {
+    await axios.post(`\${API_BASE}/order/wallet/recharge`, null, {
       params: { amount },
       withCredentials: true
     })

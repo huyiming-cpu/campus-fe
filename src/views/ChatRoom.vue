@@ -9,7 +9,7 @@
       <div class="item" v-for="item in chatList" :key="item.id" 
      :class="{ active: currentUser && currentUser.id === item.id }"
      @click="openChat(item)">
-        <img :src="`http://localhost:8080/avatar/${item.avatar || 'default.jpg'}`" class="list-avatar" />
+        <img :src="`${API_BASE}/avatar/${item.avatar || 'default.jpg'}`" class="list-avatar" />
         <div class="list-info">
           <div class="list-name">{{ item.username }}</div>
           <div class="list-msg">{{ item.lastMessage || '暂无消息' }}</div>
@@ -25,7 +25,7 @@
       </div>
 
       <div class="product-card" v-if="showProductCard">
-        <img :src="`http://localhost:8080/products/${productImage}`" class="card-img" />
+        <img :src="`${API_BASE}/products/${productImage}`" class="card-img" />
         <div class="card-info">
           <div class="card-name">{{ productName }}</div>
           <button class="send-product-btn" @click="sendProductMessage">发送宝贝给TA</button>
@@ -34,7 +34,7 @@
 
       <div class="msg-box" ref="msgBoxRef">
         <div v-for="(m, idx) in msgList" :key="idx" :class="m.fromuserid === myId ? 'msg-row me' : 'msg-row other'">
-          <img v-if="m.fromuserid !== myId" :src="`http://localhost:8080/avatar/${m.avatar || 'default.jpg'}`" class="msg-avatar" />
+          <img v-if="m.fromuserid !== myId" :src="`${API_BASE}/avatar/${m.avatar || 'default.jpg'}`" class="msg-avatar" />
          <div class="bubble-wrapper">
   <div class="bubble">
     <div v-if="isLocationMessage(m.content)" class="location-card" @click="openMap(m.content)">
@@ -46,7 +46,7 @@
   </div>
   <div class="time">{{ formatTime(m.createtime) }}</div>
 </div>
-          <img v-if="m.fromuserid === myId" :src="`http://localhost:8080/avatar/${myInfo.avatar || 'default.jpg'}`" class="msg-avatar" />
+          <img v-if="m.fromuserid === myId" :src="`${API_BASE}/avatar/${myInfo.avatar || 'default.jpg'}`" class="msg-avatar" />
         </div>
       </div>
 <!-- 快捷回复 -->
@@ -82,6 +82,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, nextTick } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
@@ -164,7 +165,7 @@ const scrollToBottom = () => {
 
 const getSellerInfo = async (id) => {
   try {
-    const res = await axios.get(`http://localhost:8080/user/${id}`)
+    const res = await axios.get(`${API_BASE}/user/${id}`)
     return res.data.data
   } catch (e) {
     console.error('获取卖家信息失败', e)
@@ -174,7 +175,7 @@ const getSellerInfo = async (id) => {
 
 const getChatList = async () => {
   try {
-    const res = await axios.get(`http://localhost:8080/msg/my?userId=${myId.value}`)
+    const res = await axios.get(`${API_BASE}/msg/my?userId=${myId.value}`)
     chatList.value = res.data.data || []
   } catch (e) {
     console.error('获取聊天列表失败', e)
@@ -184,12 +185,12 @@ const getChatList = async () => {
 const getChatMsg = async () => {
   if (!toId.value) return
   try {
-    const res = await axios.get(`http://localhost:8080/msg/chat?from=${myId.value}&to=${toId.value}`)
+    const res = await axios.get(`${API_BASE}/msg/chat?from=${myId.value}&to=${toId.value}`)
     const messages = res.data.data || []
     
     for (let msg of messages) {
       if (msg.fromuserid !== myId.value && !msg.avatar) {
-        const userRes = await axios.get(`http://localhost:8080/user/${msg.fromuserid}`)
+        const userRes = await axios.get(`${API_BASE}/user/${msg.fromuserid}`)
         msg.avatar = userRes.data.data?.avatar || 'default.jpg'
       } else if (msg.fromuserid === myId.value) {
         msg.avatar = myInfo.value.avatar
@@ -206,7 +207,7 @@ const getChatMsg = async () => {
 const send = async () => {
   if (!toId.value || !content.value.trim()) return
   try {
-    await axios.post('http://localhost:8080/msg/send', null, {
+    await axios.post(`\${API_BASE}/msg/send`, null, {
       params: {
         fromuserid: myId.value,
         touserid: toId.value,
@@ -226,10 +227,10 @@ const send = async () => {
 const sendProductMessage = async () => {
   if (!toId.value) return
   const productMsg = `我对这个宝贝感兴趣：《${productName.value}》
-商品链接：http://localhost:5173/product/detail/${pid}`
+商品链接：${location.origin}/product/detail/${pid}`
   
   try {
-    await axios.post('http://localhost:8080/msg/send', null, {
+    await axios.post(`\${API_BASE}/msg/send`, null, {
       params: {
         fromuserid: myId.value,
         touserid: toId.value,
@@ -255,7 +256,7 @@ const openChat = async (user) => {
   
   try {
     // 标记已读
-    await axios.get('http://localhost:8080/msg/markRead', {
+    await axios.get(`\${API_BASE}/msg/markRead`, {
       params: {
         userId: myId.value,
         otherId: user.id
@@ -307,7 +308,7 @@ const sendLocationMessage = async (locationMsg) => {
   if (!toId.value) return
   
   try {
-    await axios.post('http://localhost:8080/msg/send', null, {
+    await axios.post(`\${API_BASE}/msg/send`, null, {
       params: {
         fromuserid: myId.value,
         touserid: toId.value,
@@ -356,7 +357,7 @@ onMounted(async () => {
     await getChatMsg()
     // ✅ 进入页面自动标记已读
 try {
-  await axios.get('http://localhost:8080/msg/markRead', {
+  await axios.get(`\${API_BASE}/msg/markRead`, {
     params: {
       userId: myId.value,
       otherId: sellerId

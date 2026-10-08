@@ -108,7 +108,7 @@
       <div class="product-grid">
         <div class="product-card" v-for="item in searchResultList" :key="item.id" @click="goToDetail(item.id)">
           <div class="product-image">
-            <img :src="`http://localhost:8080/products/${item.image}`" @error="handleImageError" />
+            <img :src="`${API_BASE}/products/${item.image}`" @error="handleImageError" />
             <span v-if="item.hot === 1" class="hot-badge">🔥 热门</span>
           </div>
           <div class="product-info">
@@ -142,7 +142,7 @@
       <div class="product-grid">
         <div class="product-card" v-for="item in showList" :key="item.id" @click="goToDetail(item.id)">
           <div class="product-image">
-            <img :src="`http://localhost:8080/products/${item.image}`" @error="handleImageError" />
+            <img :src="`${API_BASE}/products/${item.image}`" @error="handleImageError" />
             <span v-if="item.hot === 1" class="hot-badge">🔥 热门</span>
           </div>
           <div class="product-info">
@@ -232,6 +232,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 // ========== 你原来的 script 代码，完全不动 ==========
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
@@ -272,7 +273,7 @@ const getStarStyle = () => {
 
 const getProductList = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/product/list')
+    const res = await axios.get(`\${API_BASE}/product/list`)
     productList.value = res.data.data
   } catch (err) {
     console.error(err)
@@ -284,7 +285,7 @@ const loadFrequentClickTypes = async () => {
   const userId = sessionStorage.getItem("userId")
   if (!userId) return
   try {
-    const res = await axios.get('http://localhost:8080/product/click/types', {
+    const res = await axios.get(`\${API_BASE}/product/click/types`, {
       params: { userId },
       withCredentials: true
     })
@@ -301,7 +302,7 @@ const loadFrequentClickProductIds = async () => {
   const userId = sessionStorage.getItem("userId")
   if (!userId) return
   try {
-    const res = await axios.get('http://localhost:8080/product/click/productIds', {
+    const res = await axios.get(`\${API_BASE}/product/click/productIds`, {
       params: { userId },
       withCredentials: true
     })
@@ -316,7 +317,7 @@ const loadFrequentClickProductIds = async () => {
 // 记录点击并跳转详情
 const goToDetail = async (productId) => {
   try {
-    await axios.post('http://localhost:8080/product/click', null, {
+    await axios.post(`\${API_BASE}/product/click`, null, {
       params: { productId },
       withCredentials: true
     })
@@ -518,7 +519,7 @@ const clearAllPersonalization = async () => {
   
   // 清空后端的点击记录
   try {
-    await axios.post('http://localhost:8080/product/click/clear', null, {
+    await axios.post(`\${API_BASE}/product/click/clear`, null, {
       params: { userId },
       withCredentials: true
     })
@@ -567,12 +568,12 @@ const categories = [
 ]
 
 const getAvatarUrl = (avatar) => {
-  if (!avatar) return 'http://localhost:8080/avatar/default.jpg'
-  return `http://localhost:8080/avatar/${avatar}`
+  if (!avatar) return `\${API_BASE}/avatar/default.jpg`
+  return `${API_BASE}/avatar/${avatar}`
 }
 
 const handleImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg'
+  e.target.src = `\${API_BASE}/products/default.jpg`
 }
 
 const scrollToTop = () => {
@@ -597,9 +598,9 @@ const goRegister = () => {
 
 const loadStats = async () => {
   try {
-    const userRes = await axios.get('http://localhost:8080/user/admin/users')
-    const productRes = await axios.get('http://localhost:8080/product/list')
-    const orderRes = await axios.get('http://localhost:8080/order/admin/all')
+    const userRes = await axios.get(`\${API_BASE}/user/admin/users`)
+    const productRes = await axios.get(`\${API_BASE}/product/list`)
+    const orderRes = await axios.get(`\${API_BASE}/order/admin/all`)
     stats.value.totalUsers = (userRes.data.data || []).length
     stats.value.totalProducts = (productRes.data.data || []).filter(p => p.status === 0).length
     stats.value.totalOrders = (orderRes.data.data || []).length

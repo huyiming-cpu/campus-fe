@@ -54,6 +54,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
@@ -65,7 +66,7 @@ const loading = ref(false)
 const loadCoupons = async () => {
   loading.value = true
   try {
-    const res = await axios.get('http://localhost:8080/coupon/my', {
+    const res = await axios.get(`\${API_BASE}/coupon/my`, {
       withCredentials: true
     })
     couponList.value = res.data.data || []

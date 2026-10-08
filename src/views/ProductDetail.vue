@@ -8,7 +8,7 @@
     <div class="detail-container" v-if="product.id">
       <div class="left">
         <img 
-          :src="`http://localhost:8080/products/${product.image}`" 
+          :src="`${API_BASE}/products/${product.image}`" 
           alt="商品图片" 
           class="big-img"
           @error="handleImageError"
@@ -27,7 +27,7 @@
 
         <div class="seller" v-if="product.user" @click="goSellerHome">
           <img 
-            :src="`http://localhost:8080/avatar/${product.user.avatar}`" 
+            :src="`${API_BASE}/avatar/${product.user.avatar}`" 
             class="avatar" 
             @error="handleAvatarError"
           />
@@ -63,7 +63,7 @@
           @click="goToDetail(item.id)"
         >
           <img 
-            :src="`http://localhost:8080/products/${item.image}`" 
+            :src="`${API_BASE}/products/${item.image}`" 
             class="recommend-img"
             @error="handleRecommendImageError"
           />
@@ -71,7 +71,7 @@
           <div class="recommend-price">¥{{ item.price }}</div>
           <div class="recommend-seller">
             <img 
-              :src="`http://localhost:8080/avatar/${item.user?.avatar || 'default.jpg'}`" 
+              :src="`${API_BASE}/avatar/${item.user?.avatar || 'default.jpg'}`" 
               class="recommend-avatar"
               @error="handleAvatarError"
             />
@@ -86,6 +86,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
@@ -134,7 +135,7 @@ const goToDetail = (id) => {
 //更多好物推荐
 const getRandomRecommend = async () => {
   try {
-    const res = await axios.get("http://localhost:8080/product/recommend/byPurchase", {
+    const res = await axios.get(`\${API_BASE}/product/recommend/byPurchase`, {
       params: { currentProductId: productId },
       withCredentials: true
     });
@@ -142,7 +143,7 @@ const getRandomRecommend = async () => {
   } catch (err) {
     console.error("获取推荐失败", err);
     // 降级：使用原来的随机推荐
-    const fallbackRes = await axios.get("http://localhost:8080/product/list");
+    const fallbackRes = await axios.get(`\${API_BASE}/product/list`);
     let all = fallbackRes.data.data || [];
     all = all.filter(item => item.id !== parseInt(productId) && item.status === 0);
     for (let i = all.length - 1; i > 0; i--) {
@@ -154,18 +155,18 @@ const getRandomRecommend = async () => {
 };
 
 const handleImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg';
+  e.target.src = `\${API_BASE}/products/default.jpg`;
 };
 const handleAvatarError = (e) => {
-  e.target.src = 'http://localhost:8080/avatar/default.jpg';
+  e.target.src = `\${API_BASE}/avatar/default.jpg`;
 };
 const handleRecommendImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg';
+  e.target.src = `\${API_BASE}/products/default.jpg`;
 };
 
 const getDetail = async () => {
   try {
-    const res = await axios.get(`http://localhost:8080/product/detail/${productId}`);
+    const res = await axios.get(`${API_BASE}/product/detail/${productId}`);
     if (res.data?.data) {
       product.value = res.data.data;
       checkCollectStatus();
@@ -185,7 +186,7 @@ const addCart = async () => {
     return;
   }
   try {
-    const res = await axios.post("http://localhost:8080/product/cart/add", null, {
+    const res = await axios.post(`\${API_BASE}/product/cart/add`, null, {
       params: { userId, productId },
     });
     alert(res.data.msg);  
@@ -198,7 +199,7 @@ const addCart = async () => {
 const checkCollectStatus = async () => {
   if (!userId || !productId) return;
   try {
-    const res = await axios.get('http://localhost:8080/product/collect/my', {
+    const res = await axios.get(`\${API_BASE}/product/collect/my`, {
       params: { userId }
     });
     const collectList = res.data.data || [];
@@ -216,7 +217,7 @@ const toggleCollect = async () => {
     return;
   }
   try {
-    const res = await axios.post("http://localhost:8080/product/collect/toggle", null, {
+    const res = await axios.post(`\${API_BASE}/product/collect/toggle`, null, {
       params: { userId, productId },
     });
     isCollect.value = !isCollect.value;

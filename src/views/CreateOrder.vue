@@ -21,7 +21,7 @@
     <div v-for="(group, idx) in checkoutGroups" :key="idx" class="seller-group">
       <div class="seller-title">🏪 卖家：{{ group.sellerName }}</div>
       <div class="product-card" v-for="product in group.products" :key="product.productId">
-        <img :src="`http://localhost:8080/products/${product.productImage}`" class="product-img" />
+        <img :src="`${API_BASE}/products/${product.productImage}`" class="product-img" />
         <div class="product-info">
           <div class="product-name">{{ product.productName }}</div>
           <div class="product-price">¥{{ product.productPrice }}</div>
@@ -126,6 +126,7 @@
   </div>
 </template>
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
@@ -194,7 +195,7 @@ const getDiscountedPrice = (product) => {
 // 获取可用优惠券
 const loadCoupons = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/coupon/my', {
+    const res = await axios.get(`\${API_BASE}/coupon/my`, {
       withCredentials: true
     })
     // 只显示未使用的且满足满减条件的
@@ -260,7 +261,7 @@ const updateQuantity = (product, newQuantity) => {
 // 获取地址列表
 const loadAddress = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/address/list', {
+    const res = await axios.get(`\${API_BASE}/address/list`, {
       withCredentials: true
     })
     addressList.value = res.data.data || []
@@ -276,7 +277,7 @@ const loadAddress = async () => {
 // 获取钱包余额
 const loadWallet = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/order/wallet/balance', {
+    const res = await axios.get(`\${API_BASE}/order/wallet/balance`, {
       withCredentials: true
     })
     walletBalance.value = res.data.data || 0
@@ -355,7 +356,7 @@ try {
         }
       }
 
-      const res = await axios.post('http://localhost:8080/order/create', {
+      const res = await axios.post(`\${API_BASE}/order/create`, {
         productId: product.productId,
         sellerId: group.sellerId,
         price: product.productPrice,
@@ -377,7 +378,7 @@ try {
 
       if (tradeType.value === 'online' && payType.value === 'wallet') {
         for (const order of createdOrders) {
-          await axios.post('http://localhost:8080/order/pay', null, {
+          await axios.post(`\${API_BASE}/order/pay`, null, {
             params: { orderId: order.id, payType: 'wallet' },
             withCredentials: true
           })
@@ -403,7 +404,7 @@ if (tradeType.value === 'online' && !selectedAddress.value) {
 }
 
 try {
-  const res = await axios.post('http://localhost:8080/order/create', {
+  const res = await axios.post(`\${API_BASE}/order/create`, {
     productId: parseInt(productInfo.value.id),
     sellerId: parseInt(productInfo.value.sellerId),
     price: productInfo.value.price,
@@ -439,7 +440,7 @@ try {
 // 钱包支付（单品模式用）
 const payWithWallet = async (orderId) => {
   try {
-    const res = await axios.post('http://localhost:8080/order/pay', null, {
+    const res = await axios.post(`\${API_BASE}/order/pay`, null, {
       params: { orderId, payType: 'wallet' },
       withCredentials: true
     })

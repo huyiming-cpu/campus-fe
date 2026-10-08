@@ -60,7 +60,7 @@
       <div class="product-grid">
         <div class="product-card" v-for="item in displayList" :key="item.id" @click="goDetail(item.id)">
           <div class="product-image">
-            <img :src="`http://localhost:8080/products/${item.image}`" @error="handleImageError" />
+            <img :src="`${API_BASE}/products/${item.image}`" @error="handleImageError" />
             <span v-if="item.hot === 1" class="hot-badge">🔥 热门</span>
           </div>
           <div class="product-info">
@@ -81,6 +81,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
@@ -105,8 +106,8 @@ const checkLoginStatus = () => {
 }
 
 const getAvatarUrl = (avatar) => {
-  if (!avatar) return 'http://localhost:8080/avatar/default.jpg'
-  return `http://localhost:8080/avatar/${avatar}`
+  if (!avatar) return `\${API_BASE}/avatar/default.jpg`
+  return `${API_BASE}/avatar/${avatar}`
 }
 
 const goRegister = () => {
@@ -144,7 +145,7 @@ const onSearchInput = async () => {
   if (searchTimer) clearTimeout(searchTimer)
   searchTimer = setTimeout(async () => {
     try {
-      const res = await axios.get('http://localhost:8080/product/search/suggest', {
+      const res = await axios.get(`\${API_BASE}/product/search/suggest`, {
         params: { keyword }
       })
       suggestions.value = res.data.data || []
@@ -215,7 +216,7 @@ const applySort = () => {
 
 const getProductList = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/product/list')
+    const res = await axios.get(`\${API_BASE}/product/list`)
     productList.value = res.data.data
     console.log('商品列表加载成功:', productList.value)
   } catch (err) {
@@ -258,7 +259,7 @@ const goLogin = () => {
 }
 
 const handleImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg'
+  e.target.src = `\${API_BASE}/products/default.jpg`
 }
 </script>
 

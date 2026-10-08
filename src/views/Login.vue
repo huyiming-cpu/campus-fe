@@ -68,6 +68,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
@@ -98,7 +99,7 @@ const getStarStyle = () => {
 
 const handleLogin = async () => {
   try {
-    const res = await axios.post('http://localhost:8080/user/login', loginForm.value)
+    const res = await axios.post(`\${API_BASE}/user/login`, loginForm.value)
 
     if (!res || !res.data) {
       ElMessage.error("服务器异常")

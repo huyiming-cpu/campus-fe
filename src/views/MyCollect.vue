@@ -23,7 +23,7 @@
           <!-- 点击商品区域跳转详情 -->
           <div class="item-content" @click="goToDetail(item.product.id)">
             <img 
-              :src="`http://localhost:8080/products/${item.product.image}`" 
+              :src="`${API_BASE}/products/${item.product.image}`" 
               class="item-img"
               @error="handleImageError"
             >
@@ -31,7 +31,7 @@
               <h4>{{ item.product.name }}</h4>
               <div class="item-price">¥{{ item.product.price }}</div>
               <div class="item-seller">
-                <img :src="`http://localhost:8080/avatar/${item.product.user?.avatar || 'default.jpg'}`" class="seller-avatar" />
+                <img :src="`${API_BASE}/avatar/${item.product.user?.avatar || 'default.jpg'}`" class="seller-avatar" />
                 <span>{{ item.product.user?.username || '匿名用户' }}</span>
               </div>
             </div>
@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'  // 添加这行
 import axios from 'axios'
@@ -65,7 +66,7 @@ const goToDetail = (productId) => {
   router.push(`/product/detail/${productId}`)
 }
 const handleImageError = (e) => {
-  e.target.src = 'http://localhost:8080/products/default.jpg'
+  e.target.src = `\${API_BASE}/products/default.jpg`
 }
 
 const getStarStyle = () => {
@@ -85,7 +86,7 @@ const getStarStyle = () => {
 }
 
 onMounted(() => {
-  axios.get('http://localhost:8080/product/collect/my', {
+  axios.get(`\${API_BASE}/product/collect/my`, {
     params: { userId }
   }).then(res => {
     collectList.value = res.data.data || []
@@ -93,7 +94,7 @@ onMounted(() => {
 })
 
 const del = (id) => {
-  axios.get('http://localhost:8080/product/collect/deleteCollect', {
+  axios.get(`\${API_BASE}/product/collect/deleteCollect`, {
     params: { id }
   }).then(() => {
     collectList.value = collectList.value.filter(i => i.id !== id)

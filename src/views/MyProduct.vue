@@ -160,6 +160,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted, computed } from 'vue' 
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
@@ -269,11 +270,11 @@ const getRandomColor = (type) => {
 
 const getMyList = async (targetUserId = null) => {
   try {
-    let url = 'http://localhost:8080/product/my/list'
+    let url = `\${API_BASE}/product/my/list`
     let params = { type: currentType.value }
     
     if (targetUserId) {
-      url = 'http://localhost:8080/product/admin/user/products'
+      url = `\${API_BASE}/product/admin/user/products`
       params = { userId: targetUserId }
     }
     
@@ -291,13 +292,13 @@ const getMyList = async (targetUserId = null) => {
 
 const off = async (id) => {
   if (!confirm('确定下架？')) return
-  await axios.post(`http://localhost:8080/product/off/${id}`)
+  await axios.post(`${API_BASE}/product/off/${id}`)
   getMyList()
 }
 
 const del = async (id) => {
   if (!confirm('确定删除？')) return
-  await axios.delete(`http://localhost:8080/product/delete/${id}`)
+  await axios.delete(`${API_BASE}/product/delete/${id}`)
   getMyList()
 }
 
@@ -311,7 +312,7 @@ const closeEdit = () => {
 }
 
 const doUpdate = async () => {
-  await axios.post('http://localhost:8080/product/update', editForm.value)
+  await axios.post(`\${API_BASE}/product/update`, editForm.value)
   closeEdit()
   getMyList()
   alert('保存成功')
@@ -326,7 +327,7 @@ const selectImg = async (e) => {
   formData.append('file', file)
 
   try {
-    const res = await axios.post('http://localhost:8080/product/upload', formData, {
+    const res = await axios.post(`\${API_BASE}/product/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       withCredentials: true
     })
@@ -350,7 +351,7 @@ const doPublish = async () => {
     return
   }
   try {
-    await axios.post('http://localhost:8080/product/add', publishForm.value, {
+    await axios.post(`\${API_BASE}/product/add`, publishForm.value, {
       withCredentials: true
     })
     closePublish()
@@ -363,8 +364,8 @@ const doPublish = async () => {
 }
 
 const getImg = (img) => {
-  if (!img) return 'http://localhost:8080/products/default.jpg'
-  return `http://localhost:8080/products/${img}?v=${Date.now()}`
+  if (!img) return `\${API_BASE}/products/default.jpg`
+  return `${API_BASE}/products/${img}?v=${Date.now()}`
 }
 
 const goBack = () => router.back()

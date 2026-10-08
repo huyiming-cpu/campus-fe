@@ -94,6 +94,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -145,14 +146,14 @@ const uploadAvatar = async (e) => {
   formData.append('avatar', file)
   
   try {
-    const res = await axios.post('http://localhost:8080/user/uploadAvatar', formData, {
+    const res = await axios.post(`\${API_BASE}/user/uploadAvatar`, formData, {
       withCredentials: true,
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     if (res.data.code === 200) {
       alert('头像修改成功')
       // ✅ 重新从后端获取最新用户信息
-      const infoRes = await axios.get('http://localhost:8080/user/getMyInfo', {
+      const infoRes = await axios.get(`\${API_BASE}/user/getMyInfo`, {
         withCredentials: true
       })
       if (infoRes.data && infoRes.data.data) {
@@ -192,8 +193,8 @@ const getUserInfo = () => {
 
 // 头像路径自动匹配
 const getAvatarUrl = (avatar) => {
-  if (!avatar) return "http://localhost:8080/avatar/default.jpg"
-  return `http://localhost:8080/avatar/${avatar}`
+  if (!avatar) return `\${API_BASE}/avatar/default.jpg`
+  return `${API_BASE}/avatar/${avatar}`
 }
 
 onMounted(() => {
@@ -255,7 +256,7 @@ const getUnreadCount = async () => {
     return
   }
   try {
-    const res = await axios.get(`http://localhost:8080/msg/my?userId=${user.value.id}`)
+    const res = await axios.get(`${API_BASE}/msg/my?userId=${user.value.id}`)
     const list = res.data.data || []
     totalUnreadCount.value = list.reduce((sum, item) => sum + (item.unreadCount || 0), 0)
     console.log('未读消息总数：', totalUnreadCount.value)
@@ -273,7 +274,7 @@ const getPendingOrderCount = async () => {
     let totalPending = 0
     
     // 获取卖家订单
-    const sellRes = await axios.get('http://localhost:8080/order/mySell', {
+    const sellRes = await axios.get(`\${API_BASE}/order/mySell`, {
       params: { status: '' },
       withCredentials: true
     })
@@ -295,7 +296,7 @@ const getPendingOrderCount = async () => {
     }
     
     // 获取买家订单
-    const buyRes = await axios.get('http://localhost:8080/order/myBuy', {
+    const buyRes = await axios.get(`\${API_BASE}/order/myBuy`, {
       params: { status: '' },
       withCredentials: true
     })

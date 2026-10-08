@@ -86,6 +86,7 @@
 </template>
 
 <script setup>
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
 import { ref, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
@@ -129,7 +130,7 @@ const send = async () => {
   scrollToBottom()
 
   try {
-    const res = await axios.post('http://localhost:8080/ai/chat', {
+    const res = await axios.post(`\${API_BASE}/ai/chat`, {
       message: text
     })
 
