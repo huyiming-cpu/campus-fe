@@ -66,7 +66,7 @@ const loading = ref(false)
 const loadCoupons = async () => {
   loading.value = true
   try {
-    const res = await axios.get(`\${API_BASE}/coupon/my`, {
+    const res = await axios.get(`${API_BASE}/coupon/my`, {
       withCredentials: true
     })
     couponList.value = res.data.data || []

@@ -270,11 +270,11 @@ const getRandomColor = (type) => {
 
 const getMyList = async (targetUserId = null) => {
   try {
-    let url = `\${API_BASE}/product/my/list`
+    let url = `${API_BASE}/product/my/list`
     let params = { type: currentType.value }
     
     if (targetUserId) {
-      url = `\${API_BASE}/product/admin/user/products`
+      url = `${API_BASE}/product/admin/user/products`
       params = { userId: targetUserId }
     }
     
@@ -312,7 +312,7 @@ const closeEdit = () => {
 }
 
 const doUpdate = async () => {
-  await axios.post(`\${API_BASE}/product/update`, editForm.value)
+  await axios.post(`${API_BASE}/product/update`, editForm.value)
   closeEdit()
   getMyList()
   alert('保存成功')
@@ -327,7 +327,7 @@ const selectImg = async (e) => {
   formData.append('file', file)
 
   try {
-    const res = await axios.post(`\${API_BASE}/product/upload`, formData, {
+    const res = await axios.post(`${API_BASE}/product/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       withCredentials: true
     })
@@ -351,7 +351,7 @@ const doPublish = async () => {
     return
   }
   try {
-    await axios.post(`\${API_BASE}/product/add`, publishForm.value, {
+    await axios.post(`${API_BASE}/product/add`, publishForm.value, {
       withCredentials: true
     })
     closePublish()
@@ -364,7 +364,7 @@ const doPublish = async () => {
 }
 
 const getImg = (img) => {
-  if (!img) return `\${API_BASE}/products/default.jpg`
+  if (!img) return `${API_BASE}/products/default.jpg`
   return `${API_BASE}/products/${img}?v=${Date.now()}`
 }
 

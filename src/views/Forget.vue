@@ -122,7 +122,7 @@ const doReset = async () => {
   }
 
   try {
-    await axios.post(`\${API_BASE}/user/resetPassword`, form.value)
+    await axios.post(`${API_BASE}/user/resetPassword`, form.value)
     ElMessage.success('密码重置成功！')
     router.push('/login')
   } catch (err) {

@@ -146,7 +146,7 @@ const avatarUrl = computed(() => {
   if (form.value.avatar) {
     return `${API_BASE}/avatars/${form.value.avatar}`
   }
-  return `\${API_BASE}/avatars/default.jpg`
+  return `${API_BASE}/avatars/default.jpg`
 })
 // 随机生成星星样式
 const getStarStyle = () => {
@@ -167,7 +167,7 @@ const getStarStyle = () => {
 // 加载用户信息
 const getUserInfo = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/user/getMyInfo`, {
+    const res = await axios.get(`${API_BASE}/user/getMyInfo`, {
       withCredentials: true
     })
     console.log('用户信息：', res.data)
@@ -183,7 +183,7 @@ const getUserInfo = async () => {
 // 加载地址列表
 const loadAddress = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/address/list`, {
+    const res = await axios.get(`${API_BASE}/address/list`, {
       withCredentials: true
     })
     console.log('地址列表：', res.data)
@@ -205,7 +205,7 @@ const getCode = async () => {
   }
   
   try {
-    const res = await axios.get(`\${API_BASE}/user/sendSms?phone=` + form.value.phone)
+    const res = await axios.get(`${API_BASE}/user/sendSms?phone=` + form.value.phone)
     alert(`验证码已发送：${res.data.data}`)
     
     // 倒计时
@@ -229,7 +229,7 @@ const getCode = async () => {
 // 保存修改
 const saveInfo = async () => {
   // 拿到原来的用户信息（从接口获取的原始数据）
-  const original = await axios.get(`\${API_BASE}/user/getMyInfo`, {
+  const original = await axios.get(`${API_BASE}/user/getMyInfo`, {
     withCredentials: true
   })
   const oldUser = original.data.data
@@ -248,7 +248,7 @@ const saveInfo = async () => {
   try {
     const params = needCode ? { code: code.value } : {}
 
-    const res = await axios.post(`\${API_BASE}/user/update`, 
+    const res = await axios.post(`${API_BASE}/user/update`, 
       {
         username: form.value.username,
         phone: form.value.phone,
@@ -263,7 +263,7 @@ const saveInfo = async () => {
 
     if (res.data.code === 200) {
       alert('保存成功')
-   const latestUser = await axios.get(`\${API_BASE}/user/getMyInfo`, {
+   const latestUser = await axios.get(`${API_BASE}/user/getMyInfo`, {
         withCredentials: true
       })
       
@@ -315,7 +315,7 @@ const saveAddress = async () => {
   }
 
   try {
-    await axios.post(`\${API_BASE}/address/save`, addr, {
+    await axios.post(`${API_BASE}/address/save`, addr, {
       withCredentials: true
     })
     alert('保存成功')
@@ -360,7 +360,7 @@ const logoutUser = async () => {
   if (!confirm('确定注销账号？此操作不可恢复！')) return
   
   try {
-    const res = await axios.delete(`\${API_BASE}/user/delete`, {
+    const res = await axios.delete(`${API_BASE}/user/delete`, {
       withCredentials: true
     })
     if (res.data.code === 200) {

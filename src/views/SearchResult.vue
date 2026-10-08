@@ -106,7 +106,7 @@ const checkLoginStatus = () => {
 }
 
 const getAvatarUrl = (avatar) => {
-  if (!avatar) return `\${API_BASE}/avatar/default.jpg`
+  if (!avatar) return `${API_BASE}/avatar/default.jpg`
   return `${API_BASE}/avatar/${avatar}`
 }
 
@@ -145,7 +145,7 @@ const onSearchInput = async () => {
   if (searchTimer) clearTimeout(searchTimer)
   searchTimer = setTimeout(async () => {
     try {
-      const res = await axios.get(`\${API_BASE}/product/search/suggest`, {
+      const res = await axios.get(`${API_BASE}/product/search/suggest`, {
         params: { keyword }
       })
       suggestions.value = res.data.data || []
@@ -216,7 +216,7 @@ const applySort = () => {
 
 const getProductList = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/product/list`)
+    const res = await axios.get(`${API_BASE}/product/list`)
     productList.value = res.data.data
     console.log('商品列表加载成功:', productList.value)
   } catch (err) {
@@ -259,7 +259,7 @@ const goLogin = () => {
 }
 
 const handleImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`
+  e.target.src = `${API_BASE}/products/default.jpg`
 }
 </script>
 

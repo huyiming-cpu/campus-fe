@@ -130,7 +130,7 @@ const send = async () => {
   scrollToBottom()
 
   try {
-    const res = await axios.post(`\${API_BASE}/ai/chat`, {
+    const res = await axios.post(`${API_BASE}/ai/chat`, {
       message: text
     })
 

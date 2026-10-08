@@ -182,7 +182,7 @@ const levelClass = computed(() => {
 // 获取用户信息
 const getUserInfo = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/user/getMyInfo`, {
+    const res = await axios.get(`${API_BASE}/user/getMyInfo`, {
       withCredentials: true
     })
     userInfo.value = res.data.data
@@ -347,7 +347,7 @@ const endGame = () => {
 const addCreditScore = async () => {
   try {
     // 调用更新信用分的接口（你需要根据你的后端调整）
-    const res = await axios.post(`\${API_BASE}/user/credit/add`, null, {
+    const res = await axios.post(`${API_BASE}/user/credit/add`, null, {
       params: { score: 1 },
       withCredentials: true
     })
@@ -369,7 +369,7 @@ const closeGameResult = () => {
 const getRankList = async () => {
   loadingRank.value = true
   try {
-    const res = await axios.get(`\${API_BASE}/user/credit/rank`, {
+    const res = await axios.get(`${API_BASE}/user/credit/rank`, {
       withCredentials: true
     })
     console.log('排行榜返回数据：', res.data)  // 调试用
@@ -395,8 +395,8 @@ const loadEvaluations = async () => {
   loading.value = true
   try {
     const url = currentTab.value === 'received' 
-      ? `\${API_BASE}/evaluation/received`
-      : `\${API_BASE}/evaluation/given`
+      ? `${API_BASE}/evaluation/received`
+      : `${API_BASE}/evaluation/given`
     const res = await axios.get(url, {
       withCredentials: true
     })

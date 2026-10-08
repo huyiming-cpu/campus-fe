@@ -207,7 +207,7 @@ const getChatMsg = async () => {
 const send = async () => {
   if (!toId.value || !content.value.trim()) return
   try {
-    await axios.post(`\${API_BASE}/msg/send`, null, {
+    await axios.post(`${API_BASE}/msg/send`, null, {
       params: {
         fromuserid: myId.value,
         touserid: toId.value,
@@ -230,7 +230,7 @@ const sendProductMessage = async () => {
 商品链接：${location.origin}/product/detail/${pid}`
   
   try {
-    await axios.post(`\${API_BASE}/msg/send`, null, {
+    await axios.post(`${API_BASE}/msg/send`, null, {
       params: {
         fromuserid: myId.value,
         touserid: toId.value,
@@ -256,7 +256,7 @@ const openChat = async (user) => {
   
   try {
     // 标记已读
-    await axios.get(`\${API_BASE}/msg/markRead`, {
+    await axios.get(`${API_BASE}/msg/markRead`, {
       params: {
         userId: myId.value,
         otherId: user.id
@@ -308,7 +308,7 @@ const sendLocationMessage = async (locationMsg) => {
   if (!toId.value) return
   
   try {
-    await axios.post(`\${API_BASE}/msg/send`, null, {
+    await axios.post(`${API_BASE}/msg/send`, null, {
       params: {
         fromuserid: myId.value,
         touserid: toId.value,
@@ -357,7 +357,7 @@ onMounted(async () => {
     await getChatMsg()
     // ✅ 进入页面自动标记已读
 try {
-  await axios.get(`\${API_BASE}/msg/markRead`, {
+  await axios.get(`${API_BASE}/msg/markRead`, {
     params: {
       userId: myId.value,
       otherId: sellerId

@@ -374,7 +374,7 @@ const selectedNewAddress = ref(null)
 // 获取用户地址列表
 const loadUserAddresses = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/address/list`, {
+    const res = await axios.get(`${API_BASE}/address/list`, {
       withCredentials: true
     })
     addressList.value = res.data.data || []
@@ -404,7 +404,7 @@ const confirmAddressChange = async () => {
   }
   
   try {
-    const res = await axios.post(`\${API_BASE}/order/updateAddress`, null, {
+    const res = await axios.post(`${API_BASE}/order/updateAddress`, null, {
       params: {
         orderId: detailOrder.value.id,
         addressId: selectedAddressId.value
@@ -438,7 +438,7 @@ const sellPendingCount = ref(0) // 卖家待处理数量
 const calculatePendingCounts = async () => {
   try {
     // 获取卖家订单
-    const sellRes = await axios.get(`\${API_BASE}/order/mySell`, {
+    const sellRes = await axios.get(`${API_BASE}/order/mySell`, {
       params: { status: '' },
       withCredentials: true
     })
@@ -454,7 +454,7 @@ const calculatePendingCounts = async () => {
     sellPendingCount.value = sellCount
     
     // 获取买家订单
-    const buyRes = await axios.get(`\${API_BASE}/order/myBuy`, {
+    const buyRes = await axios.get(`${API_BASE}/order/myBuy`, {
       params: { status: '' },
       withCredentials: true
     })
@@ -580,7 +580,7 @@ const goPay = (orderId) => {
 const shipOrder = async (orderId) => {
   if (!confirm('确认发货吗？')) return
   try {
-    await axios.post(`\${API_BASE}/order/ship`, null, {
+    await axios.post(`${API_BASE}/order/ship`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -594,7 +594,7 @@ const shipOrder = async (orderId) => {
 const confirmOrder = async (orderId) => {
   if (!confirm('确认收货了吗？确认后将从钱包扣款')) return
   try {
-    await axios.post(`\${API_BASE}/order/confirm`, null, {
+    await axios.post(`${API_BASE}/order/confirm`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -613,7 +613,7 @@ const setPickupPoint = async (orderId) => {
   }
   
   try {
-    await axios.post(`\${API_BASE}/order/setPickupPoint`, null, {
+    await axios.post(`${API_BASE}/order/setPickupPoint`, null, {
       params: { orderId, pickupPoint },
       withCredentials: true
     })
@@ -628,7 +628,7 @@ const setPickupPoint = async (orderId) => {
 const applyRefund = async (orderId) => {
   if (!confirm('确定要申请退款吗？')) return
   try {
-    const res = await axios.post(`\${API_BASE}/order/refund/apply`, null, {
+    const res = await axios.post(`${API_BASE}/order/refund/apply`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -642,7 +642,7 @@ const applyRefund = async (orderId) => {
 const cancelOrder = async (orderId) => {
   if (!confirm('确定取消该订单吗？')) return
   try {
-    const res = await axios.post(`\${API_BASE}/order/cancel`, null, {
+    const res = await axios.post(`${API_BASE}/order/cancel`, null, {
       params: { orderId },
       withCredentials: true
     })
@@ -686,7 +686,7 @@ const showEvaluateDialog = (order) => {
 // 提交评价
 const submitEvaluate = async () => {
   try {
-    const res = await axios.post(`\${API_BASE}/evaluation/create`, {
+    const res = await axios.post(`${API_BASE}/evaluation/create`, {
       orderId: currentOrder.value.id,  // 使用当前订单的ID
       rating: rating.value,
       content: evaluateContent.value

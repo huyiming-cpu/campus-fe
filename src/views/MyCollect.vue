@@ -66,7 +66,7 @@ const goToDetail = (productId) => {
   router.push(`/product/detail/${productId}`)
 }
 const handleImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`
+  e.target.src = `${API_BASE}/products/default.jpg`
 }
 
 const getStarStyle = () => {
@@ -86,7 +86,7 @@ const getStarStyle = () => {
 }
 
 onMounted(() => {
-  axios.get(`\${API_BASE}/product/collect/my`, {
+  axios.get(`${API_BASE}/product/collect/my`, {
     params: { userId }
   }).then(res => {
     collectList.value = res.data.data || []
@@ -94,7 +94,7 @@ onMounted(() => {
 })
 
 const del = (id) => {
-  axios.get(`\${API_BASE}/product/collect/deleteCollect`, {
+  axios.get(`${API_BASE}/product/collect/deleteCollect`, {
     params: { id }
   }).then(() => {
     collectList.value = collectList.value.filter(i => i.id !== id)

@@ -106,7 +106,7 @@ const getStarStyle = () => {
 
 
 const handleImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`
+  e.target.src = `${API_BASE}/products/default.jpg`
 }
 
 const toggleSelectAll = () => {
@@ -123,7 +123,7 @@ const updateSelectAll = () => {
 }
 
 onMounted(() => {
-  axios.get(`\${API_BASE}/product/cart/my`, {
+  axios.get(`${API_BASE}/product/cart/my`, {
     params: { userId }
   }).then(res => {
     cartList.value = res.data.data || []
@@ -135,7 +135,7 @@ onMounted(() => {
 })
 
 const del = (id) => {
-  axios.get(`\${API_BASE}/product/cart/delete`, {
+  axios.get(`${API_BASE}/product/cart/delete`, {
     params: { id: id }
   }).then(() => {
     cartList.value = cartList.value.filter(c => c.id !== id)

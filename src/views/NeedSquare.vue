@@ -196,7 +196,7 @@ const currentUserId = sessionStorage.getItem("userId")
 const loadNeeds = async () => {
   loading.value = true
   try {
-    let url = `\${API_BASE}/need/list`
+    let url = `${API_BASE}/need/list`
     let params = {}
     
     if (filterType.value === 'school') {
@@ -232,7 +232,7 @@ const loadNeeds = async () => {
 // 加载智能匹配（需求帖子）
 const loadMatch = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/need/match`, {
+    const res = await axios.get(`${API_BASE}/need/match`, {
       withCredentials: true
     })
     matchList.value = res.data.data || []
@@ -244,7 +244,7 @@ const loadMatch = async () => {
 // 加载推荐商品（根据用户需求匹配商品）
 const loadRecommendProducts = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/need/recommend/byNeed`, {
+    const res = await axios.get(`${API_BASE}/need/recommend/byNeed`, {
       withCredentials: true
     })
     recommendProducts.value = res.data.data || []
@@ -277,7 +277,7 @@ const uploadImage = async (e) => {
   formData.append('file', file)
   
   try {
-    const res = await axios.post(`\${API_BASE}/need/upload`, formData)
+    const res = await axios.post(`${API_BASE}/need/upload`, formData)
     publishForm.value.image = res.data.data
     previewImage.value = URL.createObjectURL(file)
   } catch (err) {
@@ -291,7 +291,7 @@ const submitNeed = async () => {
     return
   }
   try {
-    const res = await axios.post(`\${API_BASE}/need/publish`, {
+    const res = await axios.post(`${API_BASE}/need/publish`, {
       type: publishForm.value.type,
       category: publishForm.value.category,
       title: publishForm.value.title,

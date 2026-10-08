@@ -99,7 +99,7 @@ const getStarStyle = () => {
 
 const handleLogin = async () => {
   try {
-    const res = await axios.post(`\${API_BASE}/user/login`, loginForm.value)
+    const res = await axios.post(`${API_BASE}/user/login`, loginForm.value)
 
     if (!res || !res.data) {
       ElMessage.error("服务器异常")

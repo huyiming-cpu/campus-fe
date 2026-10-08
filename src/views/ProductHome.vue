@@ -273,7 +273,7 @@ const getStarStyle = () => {
 
 const getProductList = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/product/list`)
+    const res = await axios.get(`${API_BASE}/product/list`)
     productList.value = res.data.data
   } catch (err) {
     console.error(err)
@@ -285,7 +285,7 @@ const loadFrequentClickTypes = async () => {
   const userId = sessionStorage.getItem("userId")
   if (!userId) return
   try {
-    const res = await axios.get(`\${API_BASE}/product/click/types`, {
+    const res = await axios.get(`${API_BASE}/product/click/types`, {
       params: { userId },
       withCredentials: true
     })
@@ -302,7 +302,7 @@ const loadFrequentClickProductIds = async () => {
   const userId = sessionStorage.getItem("userId")
   if (!userId) return
   try {
-    const res = await axios.get(`\${API_BASE}/product/click/productIds`, {
+    const res = await axios.get(`${API_BASE}/product/click/productIds`, {
       params: { userId },
       withCredentials: true
     })
@@ -317,7 +317,7 @@ const loadFrequentClickProductIds = async () => {
 // 记录点击并跳转详情
 const goToDetail = async (productId) => {
   try {
-    await axios.post(`\${API_BASE}/product/click`, null, {
+    await axios.post(`${API_BASE}/product/click`, null, {
       params: { productId },
       withCredentials: true
     })
@@ -519,7 +519,7 @@ const clearAllPersonalization = async () => {
   
   // 清空后端的点击记录
   try {
-    await axios.post(`\${API_BASE}/product/click/clear`, null, {
+    await axios.post(`${API_BASE}/product/click/clear`, null, {
       params: { userId },
       withCredentials: true
     })
@@ -568,12 +568,12 @@ const categories = [
 ]
 
 const getAvatarUrl = (avatar) => {
-  if (!avatar) return `\${API_BASE}/avatar/default.jpg`
+  if (!avatar) return `${API_BASE}/avatar/default.jpg`
   return `${API_BASE}/avatar/${avatar}`
 }
 
 const handleImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`
+  e.target.src = `${API_BASE}/products/default.jpg`
 }
 
 const scrollToTop = () => {
@@ -598,9 +598,9 @@ const goRegister = () => {
 
 const loadStats = async () => {
   try {
-    const userRes = await axios.get(`\${API_BASE}/user/admin/users`)
-    const productRes = await axios.get(`\${API_BASE}/product/list`)
-    const orderRes = await axios.get(`\${API_BASE}/order/admin/all`)
+    const userRes = await axios.get(`${API_BASE}/user/admin/users`)
+    const productRes = await axios.get(`${API_BASE}/product/list`)
+    const orderRes = await axios.get(`${API_BASE}/order/admin/all`)
     stats.value.totalUsers = (userRes.data.data || []).length
     stats.value.totalProducts = (productRes.data.data || []).filter(p => p.status === 0).length
     stats.value.totalOrders = (orderRes.data.data || []).length

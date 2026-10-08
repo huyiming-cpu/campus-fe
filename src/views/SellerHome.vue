@@ -102,11 +102,11 @@ const sellerGoods = ref([])
 
 // 图片加载失败处理
 const handleAvatarError = (e) => {
-  e.target.src = `\${API_BASE}/avatar/default.jpg`
+  e.target.src = `${API_BASE}/avatar/default.jpg`
 }
 
 const handleImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`
+  e.target.src = `${API_BASE}/products/default.jpg`
 }
 // 随机生成星星样式
 const getStarStyle = () => {
@@ -157,7 +157,7 @@ const formatDate = (time) => {
 const getSellerInfo = async () => {
   try {
     // 1. 获取所有商品
-    const res = await axios.get(`\${API_BASE}/product/list`)
+    const res = await axios.get(`${API_BASE}/product/list`)
     const all = res.data.data || []
     
     // 2. ✅ 修复：用 p.user.id 匹配卖家ID

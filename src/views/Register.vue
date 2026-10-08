@@ -129,7 +129,7 @@ const sendCode = () => {
 // 注册提交
 const doRegister = async () => {
   try {
-    const res = await axios.post(`\${API_BASE}/user/register`, form.value)
+    const res = await axios.post(`${API_BASE}/user/register`, form.value)
     if (res.data.code === 200) {
       ElMessage.success('注册成功！请登录')
       goLogin()

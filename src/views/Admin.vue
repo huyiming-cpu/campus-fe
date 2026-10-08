@@ -596,7 +596,7 @@ const filteredProducts = computed(() => {
 // 加载待审核商品
 const loadPendingProducts = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/product/admin/pending`, {
+    const res = await axios.get(`${API_BASE}/product/admin/pending`, {
       withCredentials: true
     })
     const pendingList = res.data.data || []
@@ -619,7 +619,7 @@ const openAuditDialog = (product) => {
 // 提交审核
 const submitAudit = async (auditStatus) => {
   try {
-    const res = await axios.post(`\${API_BASE}/product/admin/audit`, null, {
+    const res = await axios.post(`${API_BASE}/product/admin/audit`, null, {
       params: {
         productId: auditProduct.value.id,
         auditStatus: auditStatus
@@ -688,7 +688,7 @@ const submitEditProduct = async () => {
     return
   }
   try {
-    const res = await axios.post(`\${API_BASE}/product/update`, editProductForm.value, {
+    const res = await axios.post(`${API_BASE}/product/update`, editProductForm.value, {
       withCredentials: true
     })
     if (res.data.code === 200) {
@@ -789,15 +789,15 @@ const adminHandleRefund = async (orderId, action) => {
 // 加载统计数据
 const loadStats = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/product/list`)
+    const res = await axios.get(`${API_BASE}/product/list`)
     const products = res.data.data || []
     stats.value.products = products.length
     stats.value.selling = products.filter(p => p.status === 0).length
     
-    const userRes = await axios.get(`\${API_BASE}/user/admin/users`)
+    const userRes = await axios.get(`${API_BASE}/user/admin/users`)
     stats.value.users = (userRes.data.data || []).length
     
-    const orderRes = await axios.get(`\${API_BASE}/order/admin/all`)
+    const orderRes = await axios.get(`${API_BASE}/order/admin/all`)
     const orders = orderRes.data.data || []
     
     const originalTotal = orders.reduce((sum, o) => sum + (o.price * o.quantity || 0), 0)
@@ -811,7 +811,7 @@ const loadStats = async () => {
 // 加载商品列表（管理员专用）
 const loadProducts = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/product/admin/list`, {
+    const res = await axios.get(`${API_BASE}/product/admin/list`, {
       withCredentials: true
     })
     productList.value = res.data.data || []
@@ -826,7 +826,7 @@ const goToDetail = (id, type) => {
 // 加载用户列表
 const loadUsers = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/user/admin/users`)
+    const res = await axios.get(`${API_BASE}/user/admin/users`)
     userList.value = res.data.data || []
     for (let user of userList.value) {
       try {
@@ -865,7 +865,7 @@ const deleteUser = async (userId, username) => {
 // 加载订单列表
 const loadOrders = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/order/admin/all`)
+    const res = await axios.get(`${API_BASE}/order/admin/all`)
     orderList.value = res.data.data || []
   } catch (err) {
     console.error('加载订单失败', err)
@@ -900,7 +900,7 @@ const deleteProduct = async (id) => {
 // 切换热门状态（无确认弹窗）
 const toggleHot = async (product, isHot) => {
   try {
-    const res = await axios.post(`\${API_BASE}/product/update`, {
+    const res = await axios.post(`${API_BASE}/product/update`, {
       id: product.id,
       name: product.name,
       price: product.price,
@@ -929,7 +929,7 @@ const editUser = (user) => {
 // 保存用户编辑
 const saveUserEdit = async () => {
   try {
-    await axios.post(`\${API_BASE}/user/admin/update`, editUserForm.value)
+    await axios.post(`${API_BASE}/user/admin/update`, editUserForm.value)
     alert('保存成功')
     showEditDialog.value = false
     loadUsers()
@@ -1024,11 +1024,11 @@ const closeActivity = () => {
 // 加载所有礼包
 const loadAllGiftPacks = async () => {
   try {
-    const gradRes = await axios.get(`\${API_BASE}/giftPack/list`, {
+    const gradRes = await axios.get(`${API_BASE}/giftPack/list`, {
       params: { type: 'graduation' },
       withCredentials: true
     })
-    const freshRes = await axios.get(`\${API_BASE}/giftPack/list`, {
+    const freshRes = await axios.get(`${API_BASE}/giftPack/list`, {
       params: { type: 'freshman' },
       withCredentials: true
     })

@@ -135,7 +135,7 @@ const goToDetail = (id) => {
 //更多好物推荐
 const getRandomRecommend = async () => {
   try {
-    const res = await axios.get(`\${API_BASE}/product/recommend/byPurchase`, {
+    const res = await axios.get(`${API_BASE}/product/recommend/byPurchase`, {
       params: { currentProductId: productId },
       withCredentials: true
     });
@@ -143,7 +143,7 @@ const getRandomRecommend = async () => {
   } catch (err) {
     console.error("获取推荐失败", err);
     // 降级：使用原来的随机推荐
-    const fallbackRes = await axios.get(`\${API_BASE}/product/list`);
+    const fallbackRes = await axios.get(`${API_BASE}/product/list`);
     let all = fallbackRes.data.data || [];
     all = all.filter(item => item.id !== parseInt(productId) && item.status === 0);
     for (let i = all.length - 1; i > 0; i--) {
@@ -155,13 +155,13 @@ const getRandomRecommend = async () => {
 };
 
 const handleImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`;
+  e.target.src = `${API_BASE}/products/default.jpg`;
 };
 const handleAvatarError = (e) => {
-  e.target.src = `\${API_BASE}/avatar/default.jpg`;
+  e.target.src = `${API_BASE}/avatar/default.jpg`;
 };
 const handleRecommendImageError = (e) => {
-  e.target.src = `\${API_BASE}/products/default.jpg`;
+  e.target.src = `${API_BASE}/products/default.jpg`;
 };
 
 const getDetail = async () => {
@@ -186,7 +186,7 @@ const addCart = async () => {
     return;
   }
   try {
-    const res = await axios.post(`\${API_BASE}/product/cart/add`, null, {
+    const res = await axios.post(`${API_BASE}/product/cart/add`, null, {
       params: { userId, productId },
     });
     alert(res.data.msg);  
@@ -199,7 +199,7 @@ const addCart = async () => {
 const checkCollectStatus = async () => {
   if (!userId || !productId) return;
   try {
-    const res = await axios.get(`\${API_BASE}/product/collect/my`, {
+    const res = await axios.get(`${API_BASE}/product/collect/my`, {
       params: { userId }
     });
     const collectList = res.data.data || [];
@@ -217,7 +217,7 @@ const toggleCollect = async () => {
     return;
   }
   try {
-    const res = await axios.post(`\${API_BASE}/product/collect/toggle`, null, {
+    const res = await axios.post(`${API_BASE}/product/collect/toggle`, null, {
       params: { userId, productId },
     });
     isCollect.value = !isCollect.value;
